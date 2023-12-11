@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(livox_mapping)
 
-SET(CMAKE_BUILD_TYPE "Debug")
+SET(CMAKE_BUILD_TYPE "Release")
 
 #set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
 
@@ -20,25 +20,37 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
-  pcl_ros
+  # pcl_ros
   tf
-  livox_ros_driver
+#  livox_ros_driver
   )
 
+set(livox_ros_driver_DIR /home/sy/lidar/Livox/devel/share/livox_ros_driver/cmake)
+find_package(livox_ros_driver REQUIRED)
+MESSAGE(STATUS "livox_ros_driver_DIR------------${livox_ros_driver_DIR}---------")
+MESSAGE(STATUS "livox_ros_driver_INCLUDE_DIRS------------${livox_ros_driver_INCLUDE_DIRS}---------")
+MESSAGE(STATUS "livox_ros_driver_LIBRARIES------------${livox_ros_driver_LIBRARIES}---------")
+set(Eigen3_DIR /home/sy/3rdparty/eigen-3.4.0-install-x86/share/eigen3/cmake)
 find_package(Eigen3 REQUIRED)
+MESSAGE(STATUS "EIGEN3_INCLUDE_DIR------------${EIGEN3_INCLUDE_DIR}------------------")
+
 find_package(PCL REQUIRED)
+set(OpenCV_DIR /home/sy/3rdparty/opencv-3.4.16-install/share/OpenCV)
 find_package(OpenCV REQUIRED)
 
 include_directories(
-	${catkin_INCLUDE_DIRS} 
-        ${EIGEN3_INCLUDE_DIR}
-	${PCL_INCLUDE_DIRS})
+	${catkin_INCLUDE_DIRS}
+	${EIGEN3_INCLUDE_DIR}
+	${PCL_INCLUDE_DIRS}
+	${livox_ros_driver_INCLUDE_DIRS}
+)
 
 catkin_package(
   CATKIN_DEPENDS geometry_msgs nav_msgs roscpp rospy std_msgs
   DEPENDS EIGEN3 PCL OpenCV
   INCLUDE_DIRS
 )
+
 
 add_executable(livox_repub src/livox_repub.cpp)
 target_link_libraries(livox_repub ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBS})
@@ -47,8 +59,8 @@ add_executable(loam_scanRegistration src/scanRegistration.cpp)
 target_link_libraries(loam_scanRegistration ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBS})
 
 add_executable(loam_scanRegistration_horizon src/scanRegistration_horizon.cpp)
-target_link_libraries(loam_scanRegistration_horizon ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(loam_scanRegistration_horizon ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBS} ${livox_ros_driver_LIBRARIES})
 
 add_executable(loam_laserMapping src/laserMapping.cpp)
-target_link_libraries(loam_laserMapping ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(loam_laserMapping ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBS} ${livox_ros_driver_LIBRARIES})
 

@@ -140,7 +140,7 @@ void laserCloudHandler_temp(const sensor_msgs::PointCloud2ConstPtr& laserCloudMs
   sensor_msgs::PointCloud2 laserCloudOutMsg;
   pcl::toROSMsg(*laserCloudIn, laserCloudOutMsg);
   laserCloudOutMsg.header.stamp = laserCloudMsg->header.stamp;
-  laserCloudOutMsg.header.frame_id = "/livox";
+  laserCloudOutMsg.header.frame_id = "livox";
   pubLaserCloud_temp.publish(laserCloudOutMsg);
 
 }
@@ -534,7 +534,7 @@ int main(int argc, char** argv)
   //                                ("/livox/lidar_temp", 2);
 
   ros::Subscriber subLaserCloud = nh.subscribe<sensor_msgs::PointCloud2>
-                                  ("/livox/lidar", 100, laserCloudHandler);
+                                  ("/livox_pcl0", 100, laserCloudHandler);
   pubLaserCloud = nh.advertise<sensor_msgs::PointCloud2>
                                  ("/livox_cloud", 20);
 

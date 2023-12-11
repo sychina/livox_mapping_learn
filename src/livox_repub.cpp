@@ -23,10 +23,11 @@ void LivoxMsgCbk1(const livox_ros_driver::CustomMsgConstPtr& livox_msg_in) {
       pt.x = livox_msg->points[i].x;
       pt.y = livox_msg->points[i].y;
       pt.z = livox_msg->points[i].z;
-      float s = livox_msg->points[i].offset_time / (float)time_end;
+      float s = livox_msg->points[i].offset_time / (float)time_end;// 0/99825865 ？？？？
 
+//      整数部分是线数，小数部分是反射率
       pt.intensity = livox_msg->points[i].line +livox_msg->points[i].reflectivity /10000.0 ; // The integer part is line number and the decimal part is timestamp
-      pt.curvature = s*0.1;
+      pt.curvature = s*0.1; // 每一个点相对于第一个点的相对时间？？？？ 0/99825865 * 0.1  更小了
       pcl_in.push_back(pt);
     }
   }
@@ -38,7 +39,7 @@ void LivoxMsgCbk1(const livox_ros_driver::CustomMsgConstPtr& livox_msg_in) {
   sensor_msgs::PointCloud2 pcl_ros_msg;
   pcl::toROSMsg(pcl_in, pcl_ros_msg);
   pcl_ros_msg.header.stamp.fromNSec(timebase_ns);
-  pcl_ros_msg.header.frame_id = "/livox";
+  pcl_ros_msg.header.frame_id = "livox";
   pub_pcl_out1.publish(pcl_ros_msg);
   livox_data.clear();
 }
